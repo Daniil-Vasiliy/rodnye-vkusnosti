@@ -163,8 +163,14 @@ dialog::backdrop { background: #2b241b70; }
 body:has(dialog[open]) { overflow: hidden; }
 .close { position: absolute; top: 10px; right: 10px; z-index: 1; width: 39px; height: 39px; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--olive); font-size: 1.5rem; line-height: 1; }
 .close:hover { background: var(--sage); }
-.detail-media > :is(img, svg) { max-height: 270px; }
+.detail-media > :is(img:not(.detail-gallery-main), svg) { max-height: 270px; }
 .detail-media figcaption { padding: 5px 16px; color: var(--muted); font-size: .75rem; text-align: right; }
+.detail-media { margin: 0; }
+.detail-gallery-main { width: 100%; aspect-ratio: 1.28; max-height: 330px; object-fit: cover; background: var(--beige); }
+.detail-thumbnails { display: flex; gap: 8px; padding: 10px 14px; overflow-x: auto; border-bottom: 1px solid var(--line); background: var(--milk); }
+.detail-thumbnail { flex: 0 0 62px; width: 62px; height: 62px; padding: 0; overflow: hidden; border: 2px solid transparent; border-radius: 8px; background: var(--beige); }
+.detail-thumbnail.is-active { border-color: var(--olive); }
+.detail-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
 .detail-inner, .cart-inner { padding: 24px; }
 .detail-inner h2, .cart-inner h2 { margin-block: 8px 12px; font-size: clamp(1.8rem, 6vw, 2.7rem); }
 .details { display: grid; gap: 12px; padding-block: 14px; margin: 12px 0; border-block: 1px dashed var(--line); }
@@ -269,6 +275,7 @@ const kurnikiPrep = 'Выложите замороженные курники н
 const khachapuriPrep = 'В духовке. Выложите замороженные хачапури на противень, застеленный пергаментом или силиконовым ковриком. При желании смажьте бортики теста взбитым яичным желтком. Выпекайте в предварительно разогретой до 180 °C духовке 20–25 минут до золотистого цвета теста и полного расплавления сыра.\n\nДля хачапури-лодочки (по-аджарски). За 3–4 минуты до готовности достаньте противень, аккуратно сделайте в центре углубление и влейте свежий яичный желток. Верните в духовку, чтобы белок слегка схватился, а желток остался жидким.';
 
 const image = (file, alt) => ({ src: `assets/${file}`, alt });
+const lenaPhoto = (file, alt) => image(`lena/${file}`, alt);
 // В карточках используем только фотографии из материалов Лены: без стоковых,
 // сгенерированных изображений и макетов этикеток.
 const handmadePhoto = image('pelmeni-fresh.jpg', 'Ручная лепка Лены');
@@ -279,6 +286,59 @@ const cutletPhoto = image('cutlets-chicken.jpg', 'Котлеты из домаш
 const hotPhoto = image('nests-mushroom.jpg', 'Горячее блюдо из домашней кухни Лены');
 const syrnikiPhoto = image('syrniki-assorted.jpg', 'Сырники «Родные вкусности» в ассортименте');
 const pancakePhoto = image('pancakes-meat.jpg', 'Домашние блинчики Лены');
+
+// Только исходные фотографии Лены из чата MAX. Макеты прайса и этикетки в
+// витрину не выводим: покупатель видит само блюдо, а не картинку с ценой.
+const lenaGalleries = {
+  'pelmeni-chicken': [lenaPhoto('b6b3f499-6798-4431-b175-7466095cbb19.jpg', 'Пельмени куриные ручной лепки'), lenaPhoto('d206ae07-6532-4b6e-9a02-9f2027213cc8.jpg', 'Карточка пельменей куриных от Лены')],
+  'pelmeni-pork-beef': [lenaPhoto('25d79030-c2ca-41dc-8fb3-3d9ead8fe60c.jpg', 'Пельмени со свининой и говядиной'), lenaPhoto('61d726e2-e16e-46e8-9b0c-9ca47218b709.jpg', 'Карточка пельменей со свининой и говядиной от Лены')],
+  'pelmeni-turkey': [lenaPhoto('69103be0-8721-4760-b902-15db252333b1.jpg', 'Цветные детские пельмени с индейкой'), lenaPhoto('d4ebac8f-7774-4b4f-971d-ea1cac5c521b.jpg', 'Карточка детских пельменей с индейкой от Лены')],
+  'pelmeni-spinach': [lenaPhoto('0203dbc6-a947-4199-9d61-f7f38e3da198.jpg', 'Пельмени на шпинатном тесте')],
+  'vareniki-potato': [lenaPhoto('ecf4da17-a71a-4bf0-a2d2-04b0c611f5ef.jpg', 'Вареники ручной лепки'), lenaPhoto('18190c6a-1dd7-4574-8641-06c28cfc74e9.jpg', 'Карточка вареников с картофелем и грибами от Лены')],
+  'vareniki-mushroom': [lenaPhoto('18190c6a-1dd7-4574-8641-06c28cfc74e9.jpg', 'Карточка вареников с картофелем и грибами от Лены')],
+  'vareniki-cheese': [image('vareniki-cheese-fresh.jpg', 'Вареники с адыгейским сыром, сулугуни и зеленью'), lenaPhoto('9dd4a488-4871-4fa2-a984-5098f785e064.jpg', 'Карточка вареников с сыром и зеленью от Лены')],
+  'vareniki-cottage': [lenaPhoto('663e211c-c905-4222-af72-d5679fc15f74.jpg', 'Карточка вареников со сладким творогом от Лены')],
+  'manty-pork-beef': [lenaPhoto('e6990b58-c0ec-46c1-84f9-b182e0886515.jpg', 'Манты ручной лепки')],
+  'manty-pumpkin': [image('manty-fresh.jpg', 'Манты с говядиной и тыквой')],
+  kurze: [lenaPhoto('15fc4f84-3d45-4709-8df9-9a3621fbd3a4.jpg', 'Курзе с говядиной'), lenaPhoto('22b10b77-f301-4b53-9b1f-b115acaeffc1.jpg', 'Карточка курзе с говядиной от Лены')],
+  'chebureki-standard': [lenaPhoto('c9dd630c-bbe7-458f-b322-1e198f723692.jpg', 'Чебуреки ручной лепки')],
+  'chebureki-mini': [lenaPhoto('e6990b58-c0ec-46c1-84f9-b182e0886515.jpg', 'Мини-чебуреки ручной лепки')],
+  kurniki: [lenaPhoto('b20ae4ce-8e16-4e79-8a92-467a3d796dad.jpg', 'Домашние курники с курицей и картофелем')],
+  'cutlets-chicken': [lenaPhoto('d0c0f34f-b867-4db4-b37e-6bdf45e65671.jpg', 'Куриные котлеты')],
+  'cutlets-chicken-broccoli': [lenaPhoto('67b48016-9443-4628-a5dc-39bd1be1582e.jpg', 'Куриные котлеты с брокколи')],
+  'cutlets-chicken-cheese': [lenaPhoto('0459d60f-1246-4173-99ab-1935d177587f.jpg', 'Куриные котлеты с сыром'), lenaPhoto('a3d832fe-aa69-4b03-934e-443b29f6b851.jpg', 'Куриные котлеты с сыром')],
+  'cutlets-home': [lenaPhoto('cd8610e8-cb54-4c28-a53e-7cc82078e46a.jpg', 'Домашние котлеты со свининой и говядиной')],
+  'cutlets-turkey': [lenaPhoto('34e634df-b5f3-42a7-b2fd-2d5f440d68b7.jpg', 'Детские котлеты из индейки')],
+  'nests-mushroom': [image('nests-mushroom.jpg', 'Куриные гнёзда с грибами')],
+  'nests-pineapple': [image('nests-pineapple.jpg', 'Куриные гнёзда с ананасами')],
+  'meatballs-chicken': [lenaPhoto('9312bcdf-be86-4136-bb48-b7104f5bed64.jpg', 'Куриные фрикадельки')],
+  'meatballs-pork-beef': [lenaPhoto('d47e9df3-84ff-45cd-8cd1-903226d89828.jpg', 'Фрикадельки из свинины и говядины')],
+  'meatballs-turkey': [lenaPhoto('a3a7f2bc-9881-457a-9c63-5ef6d997514b.jpg', 'Мини-фрикадельки из индейки')],
+  'tefteli-pork-beef': [lenaPhoto('0c61ac05-6438-4ad8-87f1-8e8a05358c4e.jpg', 'Тефтели из свинины и говядины')],
+  'tefteli-chicken': [lenaPhoto('cc037734-e04f-4d17-9d85-7681e2a2d335.jpg', 'Куриные тефтели')],
+  julienne: [lenaPhoto('a8ab0169-eafc-4f42-b0ec-85243f0550d5.jpg', 'Жульен с курицей и грибами'), lenaPhoto('ab404fd6-3d25-43dd-bea4-fc1f3222a69a.jpg', 'Карточка жульена от Лены')],
+  'chicken-rolls': [lenaPhoto('716a625c-7760-49f0-930b-14dd70a33391.jpg', 'Куриные рулетики в беконе')],
+  'chicken-cordon-bleu': [lenaPhoto('0922f4dc-8c78-4d58-8f8d-32cc981bf75b.jpg', 'Куриные рулетики «Кордон Блю»'), lenaPhoto('233ac490-7371-4816-8532-552382c7f792.jpg', 'Рулетики «Кордон Блю» в панировке')],
+  khachapuri: [image('khachapuri-curd.jpg', 'Хачапури на творожном тесте')],
+  'mini-pizza': [lenaPhoto('4fc76802-4618-4809-a1a2-1bd2563e5308.jpg', 'Домашние мини-пиццы'), lenaPhoto('6d96d765-07d9-4eb3-a0a4-e8a3599dff19.jpg', 'Домашние мини-пиццы')],
+  lasagna: [lenaPhoto('f657cceb-df1f-49eb-9437-7e7c99407459.jpg', 'Карточка лазаньи с говядиной от Лены')],
+  'golubtsy-turkey': [lenaPhoto('dc78cc43-2c9f-4614-9e4e-249aeecf0b28.jpg', 'Голубцы из индейки'), lenaPhoto('d0a34a06-5f93-4f94-9ce4-e324c87eba3b.jpg', 'Голубцы из индейки'), lenaPhoto('ef12e75f-3e0f-4a96-8c51-746e113220a7.jpg', 'Карточка голубцов от Лены')],
+  'golubtsy-home': [lenaPhoto('cd092d10-0053-45ab-9cd7-279f0b3f4612.jpg', 'Домашние голубцы'), lenaPhoto('b9161c0e-4d08-42fc-a08d-99daf1d60c97.jpg', 'Домашние голубцы')],
+  'syrniki-classic': [lenaPhoto('ed8cbcae-bb8b-45e1-9a23-95669c3a6424.jpg', 'Сырники классические')],
+  'syrniki-poppy': [lenaPhoto('f17f0da1-6c4f-4ced-bad4-348beff27afe.jpg', 'Сырники с маком')],
+  'syrniki-chocolate': [lenaPhoto('bf8c559e-11d5-4749-b405-f81e8d106419.jpg', 'Сырники с молочным шоколадом')],
+  'syrniki-condensed': [lenaPhoto('3bff13da-61b9-4a73-8109-c340e5efd7b0.jpg', 'Сырники с варёной сгущёнкой')],
+  'syrniki-raspberry': [lenaPhoto('af5eb8de-c14e-4e05-bdd6-776fbee47e88.jpg', 'Сырники с кокосом и малиной')],
+  'syrniki-strawberry': [lenaPhoto('146b5fb5-e533-45f2-9e03-af9d0711ff94.jpg', 'Сырники с клубникой')],
+  'syrniki-cherry': [lenaPhoto('b618ba47-8229-4714-9607-8d996739f488.jpg', 'Сырники с вишней')],
+  'blini-ham-cheese': [lenaPhoto('9e76b1a5-85c3-4396-9480-daf3757395c3.jpg', 'Блины с ветчиной и сыром')],
+  'blini-curd-condensed': [lenaPhoto('5acfac04-0b65-447e-b860-cde0cbb9bf14.jpg', 'Блины с творогом и варёной сгущёнкой')],
+  'blini-raspberry': [lenaPhoto('a057f982-1571-4ba2-9eb2-c4148deb8293.jpg', 'Шоколадные блины с Нутеллой и малиной')],
+  'blini-chicken-mushroom': [lenaPhoto('4f26fb92-7975-401a-b7a5-69e7154938dd.jpg', 'Блины с курицей и грибами')],
+  'blini-meat': [lenaPhoto('fb017150-f3f7-4333-85b0-22741df558e9.jpg', 'Блины с мясом')],
+  'blini-chicken-cheese': [lenaPhoto('5c958da3-74dc-4843-ae44-94f957181c50.jpg', 'Блины с курицей и сыром')],
+  'blini-butter': [lenaPhoto('2150febb-441b-4ea4-8d0c-c134b4d07867.jpg', 'Домашние блинчики со сливочным маслом')],
+};
 
 // price is in rubles per unit. A kg item is added to the cart in 0.5 kg steps.
 const menu = {
@@ -311,6 +371,9 @@ const menu = {
     { id: 'manty-pork-beef', name: 'Манты со свининой и говядиной', price: 950, unit: 'kg',
       photo: mantyPhoto,
       ingredients: 'Свинина, говядина, репчатый лук, пшеничная мука, вода, растительное масло, соль, молотый чёрный перец.',
+      preparation: 'Готовьте без размораживания. Смажьте донышки растительным маслом и выложите манты в пароварку или мантоварку. Готовьте на пару 35–40 минут.' },
+    { id: 'manty-chicken', name: 'Манты с курицей', price: 950, unit: 'kg', photo: null,
+      ingredients: 'Тесто: пшеничная мука, вода, растительное масло, соль. Начинка: куриное филе и мякоть бедра, репчатый лук, соль, молотый чёрный перец.',
       preparation: 'Готовьте без размораживания. Смажьте донышки растительным маслом и выложите манты в пароварку или мантоварку. Готовьте на пару 35–40 минут.' },
     { id: 'manty-pumpkin', name: 'Манты с говядиной и тыквой', price: 1000, unit: 'kg',
       photo: mantyPhoto,
@@ -424,6 +487,16 @@ const menu = {
   ].map((product) => ({ unit: 'pack', portion: '10 шт.', photo: pancakePhoto, preparation: pancakesPrep, ...product })),
 };
 
+for (const items of Object.values(menu)) {
+  for (const item of items) {
+    const gallery = lenaGalleries[item.id];
+    if (gallery?.length) {
+      item.photo = gallery[0];
+      item.gallery = gallery;
+    }
+  }
+}
+
 const staticProducts = Object.entries(menu).flatMap(([category, items]) => items.map((item) => ({ category, ...item })));
 const frozenStorage = '90 суток при −18 °C';
 const pickupAddress = 'ул. Природная, 10Бк21';
@@ -534,6 +607,17 @@ function photoMarkup(product) {
   return `<svg viewBox="${escapeHtml(photo.crop)}" role="img" aria-label="${escapeHtml(photo.alt || name)}" preserveAspectRatio="xMidYMid slice"><image href="${escapeHtml(photo.src)}" width="${escapeHtml(width)}" height="${escapeHtml(height)}"/></svg>`;
 }
 
+function detailGalleryMarkup(product) {
+  const gallery = product.gallery?.length ? product.gallery : (product.photo ? [product.photo] : []);
+  if (!gallery.length) return '';
+  const primary = gallery[0];
+  const thumbnails = gallery.length > 1
+    ? `<div class="detail-thumbnails" aria-label="Фотографии блюда">${gallery.map((photo, index) =>
+      `<button class="detail-thumbnail${index === 0 ? ' is-active' : ''}" type="button" data-gallery-src="${escapeHtml(photo.src)}" data-gallery-alt="${escapeHtml(photo.alt || product.name)}" aria-label="Показать фото ${index + 1} из ${gallery.length}"><img src="${escapeHtml(photo.src)}" alt="" loading="lazy"></button>`).join('')}</div>`
+    : '';
+  return `<figure class="detail-media"><img class="detail-gallery-main" src="${escapeHtml(primary.src)}" alt="${escapeHtml(primary.alt || product.name)}">${primary.caption ? `<figcaption>${escapeHtml(primary.caption)}</figcaption>` : ''}${thumbnails}</figure>`;
+}
+
 async function renderReviews() {
   try {
     const response = await fetch('/api/reviews', { cache: 'no-store' });
@@ -629,7 +713,7 @@ function openProduct(id) {
     : ['Предварительный состав', product.draftIngredients];
   const fields = [['Фасовка', productPortion(product)], ingredients,
     ['Начинка', product.filling], ['Срок годности в замороженном виде', product.storage || frozenStorage], ['Как приготовить', product.preparation]];
-  byId('product-detail').innerHTML = `${product.photo ? `<figure class="detail-media">${photoMarkup(product)}${product.photo.caption ? `<figcaption>${escapeHtml(product.photo.caption)}</figcaption>` : ''}</figure>` : ''}
+  byId('product-detail').innerHTML = `${detailGalleryMarkup(product)}
     <div class="detail-inner">${productTag(product)}<h2 id="product-title">${escapeHtml(product.name)}</h2>
       <p class="product-price">${escapeHtml(productPrice(product))}</p>
       ${product.description ? `<p>${escapeHtml(product.description)}</p>` : ''}
@@ -728,6 +812,16 @@ function showCartFeedback() {
 document.addEventListener('click', (event) => {
   const button = event.target.closest('button');
   if (!button) return;
+  if (button.dataset.gallerySrc) {
+    const gallery = button.closest('.detail-media');
+    const main = gallery?.querySelector('.detail-gallery-main');
+    if (main) {
+      main.src = button.dataset.gallerySrc;
+      main.alt = button.dataset.galleryAlt || '';
+      gallery.querySelectorAll('.detail-thumbnail').forEach((thumbnail) => thumbnail.classList.toggle('is-active', thumbnail === button));
+    }
+    return;
+  }
   const { category, details, add, qty, step } = button.dataset;
   if (category) toggleCategory(category);
   if (details) openProduct(details);
