@@ -135,6 +135,10 @@ nav a:hover, footer a:hover { text-decoration: underline; text-underline-offset:
 .meat-post blockquote { margin: 14px 0 3px; border-left: 2px solid var(--line); padding-left: 14px; max-width: 74ch; }
 .meat-post blockquote p + p { margin-top: 10px; }
 .reviews { padding-block: clamp(42px, 6vw, 78px); background: var(--sage); border-block: 1px solid var(--line); }
+.reviews-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.review-card { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); text-decoration: none; }
+.review-card img { width: 100%; aspect-ratio: .72; object-fit: cover; object-position: top; }
+.review-card span { display: block; padding: 8px 10px; color: var(--olive); font-size: .82rem; font-weight: 650; }
 .review-placeholder { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 20px; max-width: 760px; padding: clamp(20px, 4vw, 34px); margin-top: 26px; border: 1px dashed #aaa17e; border-radius: 14px; background: var(--paper); }
 .review-mark { display: grid; place-items: center; width: 64px; height: 64px; border: 1px solid var(--olive); outline: 1px solid #b7a679; outline-offset: -5px; border-radius: 50%; color: var(--red); font: 1.45rem/1 system-ui, sans-serif; }
 .review-placeholder h3 { margin-top: 5px; font-size: clamp(1.4rem, 3vw, 1.9rem); }
@@ -211,6 +215,7 @@ textarea { resize: vertical; }
   .product-copy { padding: 10px; }
   .product h4 { font-size: 1.1rem; }
   .about-inner, .delivery-inner { grid-template-columns: 1fr; }
+  .reviews-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
   .about-media { max-width: 380px; }
   .detail-inner, .cart-inner { padding: 17px; }
   .quantity { gap: 4px; font-size: .85rem; }
@@ -488,6 +493,8 @@ const cartToggle = byId('cart-toggle');
 const cartFeedback = byId('cart-feedback');
 const orderForm = byId('order-form');
 const submitOrder = byId('submit-order');
+const reviewsSection = byId('reviews');
+const reviewsList = byId('reviews-list');
 const storageKey = 'rodnye-vkusnosti-cart-v1';
 const products = staticProducts;
 const productById = new Map(products.map((product) => [product.id, product]));
@@ -525,6 +532,23 @@ function photoMarkup(product) {
   if (!photo.crop) return `<img src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt || name)}" loading="lazy">`;
   const [width, height] = photo.size.split(' ');
   return `<svg viewBox="${escapeHtml(photo.crop)}" role="img" aria-label="${escapeHtml(photo.alt || name)}" preserveAspectRatio="xMidYMid slice"><image href="${escapeHtml(photo.src)}" width="${escapeHtml(width)}" height="${escapeHtml(height)}"/></svg>`;
+}
+
+async function renderReviews() {
+  try {
+    const response = await fetch('/api/reviews', { cache: 'no-store' });
+    const data = response.ok ? await response.json() : null;
+    const reviews = Array.isArray(data?.reviews) ? data.reviews : [];
+    if (!reviews.length) {
+      reviewsSection.hidden = true;
+      document.querySelector('nav a[href="#reviews"]')?.setAttribute('hidden', '');
+      return;
+    }
+    reviewsList.innerHTML = reviews.map((review) => `<a class="review-card" href="${escapeHtml(review.src)}" target="_blank" rel="noopener"><img src="${escapeHtml(review.src)}" alt="${escapeHtml(review.alt || 'Отзыв покупателя')}" loading="lazy">${review.caption ? `<span>${escapeHtml(review.caption)}</span>` : ''}</a>`).join('');
+  } catch {
+    reviewsSection.hidden = true;
+    document.querySelector('nav a[href="#reviews"]')?.setAttribute('hidden', '');
+  }
 }
 
 function productTag(product) {
@@ -800,6 +824,7 @@ orderForm.addEventListener('submit', async (event) => {
 
 renderCategories();
 renderCart();
+renderReviews();
 
 </script>
 </head>
@@ -870,6 +895,7 @@ renderCart();
     <section class="reviews" id="reviews" aria-labelledby="reviews-title">
       <div class="wrap">
         <div class="section-top"><div><p class="eyebrow">Тёплые слова покупателей</p><h2 id="reviews-title">Отзывы</h2></div></div>
+        <div class="reviews-grid" id="reviews-list" aria-live="polite"></div>
       </div>
     </section>
     <section class="delivery" id="delivery" aria-labelledby="delivery-title">
