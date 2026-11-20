@@ -140,15 +140,36 @@ nav a:hover, footer a:hover { text-decoration: underline; text-underline-offset:
 .meat-post blockquote { margin: 14px 0 3px; border-left: 2px solid var(--line); padding-left: 14px; max-width: 74ch; }
 .meat-post blockquote p + p { margin-top: 10px; }
 .reviews { padding-block: clamp(42px, 6vw, 78px); background: var(--sage); border-block: 1px solid var(--line); }
-.reviews-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
-.review-card { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); text-decoration: none; }
-.review-card img { width: 100%; aspect-ratio: 1.85; object-fit: contain; padding: 8px; background: var(--milk); }
-.review-card span { display: block; padding: 10px 12px; color: var(--olive); font-size: .875rem; font-weight: 650; }
-.review-card:hover span { text-decoration: underline; text-underline-offset: 3px; }
-.review-placeholder { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 20px; max-width: 760px; padding: clamp(20px, 4vw, 34px); margin-top: 26px; border: 1px dashed #aaa17e; border-radius: 14px; background: var(--paper); }
-.review-mark { display: grid; place-items: center; width: 64px; height: 64px; border: 1px solid var(--olive); outline: 1px solid #b7a679; outline-offset: -5px; border-radius: 50%; color: var(--red); font: 1.45rem/1 system-ui, sans-serif; }
-.review-placeholder h3 { margin-top: 5px; font-size: clamp(1.4rem, 3vw, 1.9rem); }
-.review-placeholder p:not(.eyebrow) { margin-top: 8px; color: var(--muted); max-width: 58ch; }
+.reviews .section-top { align-items: center; }
+#write-review {
+  min-height: 54px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  box-shadow: 0 3px 0 #3d4323;
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+.reviews-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.review-card { padding: clamp(16px, 2.5vw, 26px); border: 1px solid var(--line); border-radius: 14px; background: var(--paper); overflow-wrap: anywhere; }
+.review-author { display: flex; align-items: center; gap: 11px; }
+.review-avatar { display: grid; flex: 0 0 44px; height: 44px; place-items: center; border-radius: 50%; background: var(--sage); color: var(--olive); font-weight: 700; }
+.review-card h3 { font: 700 1rem/1.3 system-ui, sans-serif; }
+.review-meta { color: var(--muted); font-size: .875rem; }
+.review-byline { color: var(--olive); font-size: .875rem; font-weight: 650; }
+.review-body { margin-top: 14px; white-space: pre-line; }
+.review-stars { display: block; margin-top: 12px; color: #8c581d; font-size: 1.1rem; letter-spacing: .12em; }
+#more-reviews { margin-top: 18px; }
+.review-dialog-inner { max-height: 89dvh; overflow-y: auto; padding: clamp(18px, 4vw, 30px); overscroll-behavior: contain; }
+.review-dialog-inner h2 { padding-right: 38px; font-size: clamp(1.7rem, 5vw, 2.45rem); }
+#review-sign-in p { margin-block: 14px; }
+.review-rating { min-width: 0; padding: 0; margin: 0; border: 0; }
+.review-rating legend { padding: 0; color: var(--olive); font-weight: 650; }
+.review-rating > div { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.review-rating label { position: relative; display: grid; width: 44px; height: 44px; place-items: center; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); cursor: pointer; }
+.review-rating input { min-width: 0; min-height: 0; margin: 0; }
+.review-rating span { font-size: 1.35rem; }
+.review-rating label:has(:checked), .review-rating label:has(~ label :checked) { background: #f2e6cd; color: #8c581d; }
+.review-rating label:has(:focus-visible) { outline: 2px solid var(--red); outline-offset: 2px; }
 .delivery { padding-block: clamp(40px, 6vw, 72px); background: var(--beige); border-block: 1px solid var(--line); }
 .delivery-inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 6vw, 70px); }
 .delivery h2 { margin-top: 7px; }
@@ -243,14 +264,13 @@ textarea { resize: vertical; }
   .product-copy { padding: 10px; }
   .product h4 { font-size: 1.1rem; }
   .about-inner, .delivery-inner { grid-template-columns: 1fr; }
-  .reviews-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  #write-review { width: 100%; margin-top: 6px; }
+  .reviews-grid { grid-template-columns: 1fr; gap: 12px; }
   .about-media { max-width: 380px; }
   .detail-inner, .cart-inner { padding: 17px; }
   .quantity { gap: 4px; font-size: .85rem; }
   .meat-photos { gap: 8px; }
   .meat-photos img { aspect-ratio: 1; }
-  .review-placeholder { grid-template-columns: 1fr; gap: 13px; }
-  .review-mark { width: 52px; height: 52px; }
   .footer-inner > a:first-of-type { margin-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -376,16 +396,69 @@ const categoryGalleries = {
 };
 
 const lenaReviews = [
-  ['2c288fdd-6d72-4bab-bb80-f4956e7a1fc1', 'О чебуреках и варениках с картошкой и грибами'],
-  ['58a8e2e7-f577-4032-b599-f938aa2a11e9', 'О домашних заготовках'],
-  ['06d86080-3f71-45ad-996c-f84df886d861', 'О пельменях'],
-  ['48e6c7a8-d421-4786-a9d2-3e44caa1a286', 'О первом заказе'],
-  ['20a55187-014b-4467-baa7-c0f28f14d31b', 'О пельменях и качестве мяса'],
-  ['67fa8d9b-4dce-4ab8-ad24-d620e911b525', 'О мантах с говядиной и тыквой'],
-  ['a96df72a-c00c-44b1-b438-2a2db08be15e', 'О домашних котлетах'],
-  ['f246b92f-9236-4c10-b4b1-036822f6c473', 'О сырниках'],
-  ['6a24cbe1-fe86-45d5-ab1a-00cfce8a0c76', 'О заказе для семьи'],
-].map(([id, caption]) => ({ id, src: `assets/reviews/${id}.webp`, caption, alt: `Отзыв покупателя. ${caption}` }));
+  {
+    id: '2c288fdd-6d72-4bab-bb80-f4956e7a1fc1',
+    text: `Елена, добрый вечер! Сегодня начали пробовать вашу продукцию! Вкусная! 😋😋😋 Реально по-домашнему!!!
+Начинки в чебуреках неожиданно много, даже я меньше мяса кладу, когда готовлю сама 😉 И вареники с картошкой и грибами суперские 👍 Тесто нежное, начинки тоже много! Спасибо за разнообразие в нашем меню!!!
+Если будете делать вареники с картошкой и луком, напишите, тоже хотим попробовать!!!`,
+  },
+  {
+    id: '58a8e2e7-f577-4032-b599-f938aa2a11e9',
+    text: `Добрый вечер!
+Извините, если поздно)
+
+Во первых, хочется сказать огромное вам спасибо, за то, что Вы и ваш бизнес существуете 🙏🏻
+
+Вы настолько облегчаете жизнь, своими прекрасными вкусными заготовками!
+Чувствуется, что вы делаете это с душой и любовью!
+Всё безумно вкусно, красиво, моя большая семья это подтверждает ))
+
+Вы посто не представляете как давно я искала такого человека, как вы, и не могла найти(( это была случайность, когда я увидела ваше объявление в каком-то чате 😍
+
+Желаю вам только процветания, и тысячи клиентов 🌸`,
+  },
+  {
+    id: '06d86080-3f71-45ad-996c-f84df886d861',
+    text: `Елена, добрый вечер!
+Попробовали пельмешки, очень вкусные. Все в меру. Хотела сфоткать, не успела - съели. Мы целый год искали именно такие пельмени - нашли! Спасибо большое ❤️`,
+  },
+  {
+    id: '48e6c7a8-d421-4786-a9d2-3e44caa1a286',
+    text: `Лена, здравствуйте!!
+Мы с мужем все попробовали. Большой восторг, спасибо вам большое!! ❤️
+Сейчас прочитала, что будет меню к новому году, с учетом ажиотажа сразу занимаю место 😂`,
+  },
+  {
+    id: '20a55187-014b-4467-baa7-c0f28f14d31b',
+    text: `Ваши пельмени просто восторг, прям как у родителей, дочка 2 года утоптала все сама практически, мясо вкуснейшее 😍
+Неоднократно по району заказы делали и в магазине «домашние», просто есть невозможно просто все в мусор летело (((
+Но тут просто мы в восторге от вашего качества 🎉`,
+  },
+  {
+    id: '67fa8d9b-4dce-4ab8-ad24-d620e911b525',
+    text: `Здравствуйте, попробовали манты сегодня говдянина + тыква это отвал башки ооочень вкусные 😍😍😍
+Детям варили говядина + свинина они сказали мама это лучшие манты 😍😍
+Спасибо ❤️`,
+  },
+  {
+    id: 'a96df72a-c00c-44b1-b438-2a2db08be15e',
+    text: `Лена, здравствуйте!
+Попробовали пока из всего заказа только котлеты домашние!
+Очень, очень вкусно! Спасибо большое! За эстетику оформления и упаковки отдельная благодарность 🥹❤️
+
+Мы теперь ваши постоянные клиенты 🙏`,
+  },
+  {
+    id: 'f246b92f-9236-4c10-b4b1-036822f6c473',
+    text: `Елена, все оченье вкусно 🤤 сырники прям как я люблю, спасибо. Наконец нашла человека у кого вкусные заготовки 🔥.
+Если у вас вдруг будет доставка в Сказку, я бы попутно перцы ещё заказала.`,
+  },
+  {
+    id: '6a24cbe1-fe86-45d5-ab1a-00cfce8a0c76',
+    text: `Добрый день 💕
+Всё попробовали, всё очень вкусное! Мы теперь ваши постоянные клиенты)`,
+  },
+];
 
 // price is in rubles per unit. A kg item is added to the cart in 0.5 kg steps.
 const menu = {
@@ -551,6 +624,10 @@ for (const items of Object.values(menu)) {
   }
 }
 
+const productPhotos = ({ photo, gallery = [] }) => photo
+  ? [photo, ...gallery.filter((item) => item.src !== photo.src)]
+  : gallery;
+
 const staticProducts = Object.entries(menu).flatMap(([category, items]) => items.map((item) => ({ category, ...item })));
 const frozenStorage = '90 суток при −18 °C';
 const pickupAddress = 'ул. Природная, 10Бк21';
@@ -623,6 +700,11 @@ const orderForm = byId('order-form');
 const submitOrder = byId('submit-order');
 const reviewsSection = byId('reviews');
 const reviewsList = byId('reviews-list');
+const writeReviewButton = byId('write-review');
+const moreReviewsButton = byId('more-reviews');
+const reviewDialog = byId('review-dialog');
+const writeReviewForm = byId('write-review-form');
+const reviewDate = new Intl.DateTimeFormat('ru-RU', { dateStyle: 'long', timeZone: 'Europe/Moscow' });
 const storageKey = 'rodnye-vkusnosti-cart-v1';
 const products = staticProducts;
 const productById = new Map(products.map((product) => [product.id, product]));
@@ -640,6 +722,8 @@ let checking = false;
 let submitting = false;
 let cartFeedbackTimer;
 const isStaticPreview = true;
+let reviewViewer = null;
+let nextReviewPage = null;
 
 function readCart() {
   try {
@@ -660,10 +744,6 @@ function photoMarkup(product) {
   if (!photo.crop) return `<img${photo.kind === 'card' ? ' class="product-artwork"' : ''} src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt || name)}" loading="lazy">`;
   const [width, height] = photo.size.split(' ');
   return `<svg viewBox="${escapeHtml(photo.crop)}" role="img" aria-label="${escapeHtml(photo.alt || name)}" preserveAspectRatio="xMidYMid slice"><image href="${escapeHtml(photo.src)}" width="${escapeHtml(width)}" height="${escapeHtml(height)}"/></svg>`;
-}
-
-function productPhotos({ photo, gallery = [] }) {
-  return photo ? [photo, ...gallery.filter((item) => item.src !== photo.src)] : gallery;
 }
 
 function detailGalleryMarkup(photos) {
@@ -743,16 +823,120 @@ function connectDetailGallery(photos, name) {
   stage.addEventListener('lostpointercapture', () => { swipeStart = null; });
 }
 
-async function renderReviews() {
-  const data = { reviews: lenaReviews };
-  const reviews = Array.isArray(data?.reviews) ? data.reviews : [];
-  if (!reviews.length) {
-    reviewsSection.hidden = true;
-    document.querySelector('nav a[href="#reviews"]')?.setAttribute('hidden', '');
-    return;
+function reviewCard(review) {
+  const { author } = review;
+  let header = '<p class="review-byline">Покупатель</p>';
+  if (author) {
+    const initials = author.split(/\s+/u).slice(0, 2).map((word) => Array.from(word)[0]).join('').toLocaleUpperCase('ru');
+    const date = new Date(review.createdAt);
+    header = `
+      <header class="review-author">
+        <span class="review-avatar" aria-hidden="true">${escapeHtml(initials)}</span>
+        <div>
+          <h3>${escapeHtml(author)}</h3>
+          <p class="review-meta">Аккаунт ChatGPT · <time datetime="${date.toISOString()}">${reviewDate.format(date)}</time></p>
+        </div>
+      </header>`;
   }
-  reviewsList.innerHTML = reviews.map((review) => `<a class="review-card" href="${escapeHtml(review.src)}" target="_blank" rel="noopener"><img src="${escapeHtml(review.src)}" alt="${escapeHtml(review.alt || 'Отзыв покупателя')}" loading="lazy">${review.caption ? `<span>${escapeHtml(review.caption)}</span>` : ''}</a>`).join('');
+  return `
+    <article class="review-card"${author ? '' : ' data-imported'}>
+      ${header}
+      ${review.rating ? `<span class="review-stars" role="img" aria-label="Оценка ${review.rating} из 5">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>` : ''}
+      <p class="review-body">${escapeHtml(review.text)}</p>
+    </article>`;
 }
+
+function reviewNotice(id, message = '', error = false) {
+  const notice = byId(id);
+  notice.textContent = message;
+  notice.hidden = !message;
+  notice.dataset.error = error;
+}
+
+async function loadReviews(cursor = null) {
+  const isDemo = reviewsSection.hasAttribute('data-static-preview');
+  const wasDisabled = writeReviewButton.disabled;
+  writeReviewButton.disabled = true;
+  moreReviewsButton.disabled = true;
+  try {
+    let data = { reviews: lenaReviews, viewer: null, next: null };
+    if (!isDemo) {
+      const response = await fetch(cursor ? `/api/reviews?before=${cursor}` : '/api/reviews', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Не удалось загрузить отзывы.');
+      data = await response.json();
+    }
+    const cards = data.reviews.map(reviewCard).join('');
+    if (cursor) {
+      const imported = reviewsList.querySelector('[data-imported]');
+      if (imported) imported.insertAdjacentHTML('beforebegin', cards);
+      else reviewsList.insertAdjacentHTML('beforeend', cards);
+    } else {
+      reviewsList.innerHTML = cards || '<p>Здесь пока нет отзывов.</p>';
+      reviewViewer = data.viewer;
+      writeReviewButton.textContent = reviewViewer?.own ? 'Изменить свой отзыв' : 'Оставить отзыв';
+      writeReviewButton.hidden = isDemo;
+    }
+    nextReviewPage = data.next;
+    moreReviewsButton.hidden = !nextReviewPage;
+    moreReviewsButton.textContent = 'Показать ещё отзывы';
+    reviewNotice('reviews-status');
+    return true;
+  } catch {
+    reviewNotice('reviews-status', 'Не удалось загрузить отзывы. Попробуйте ещё раз.', true);
+    nextReviewPage = cursor;
+    moreReviewsButton.textContent = 'Повторить загрузку';
+    moreReviewsButton.hidden = false;
+    return false;
+  } finally {
+    moreReviewsButton.disabled = false;
+    writeReviewButton.disabled = wasDisabled;
+  }
+}
+
+function openReviewDialog() {
+  const own = reviewViewer?.own;
+  const profileName = reviewViewer?.name || '';
+  writeReviewForm.reset();
+  writeReviewForm.hidden = !reviewViewer;
+  byId('review-sign-in').hidden = Boolean(reviewViewer);
+  byId('review-dialog-title').textContent = own ? 'Изменить отзыв' : 'Оставить отзыв';
+  writeReviewForm.elements.name.value = profileName || own?.author || '';
+  writeReviewForm.elements.name.readOnly = Boolean(profileName);
+  writeReviewForm.elements.rating.value = own?.rating || '';
+  writeReviewForm.elements.text.value = own?.text || '';
+  writeReviewForm.querySelector('button[type="submit"]').textContent = own ? 'Сохранить отзыв' : 'Опубликовать отзыв';
+  reviewNotice('write-review-status');
+  reviewDialog.showModal();
+}
+
+writeReviewButton.addEventListener('click', openReviewDialog);
+moreReviewsButton.addEventListener('click', () => loadReviews(nextReviewPage));
+
+writeReviewForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const button = event.submitter;
+  const { name, rating, text } = writeReviewForm.elements;
+  const updating = Boolean(reviewViewer?.own);
+  button.disabled = true;
+  reviewNotice('write-review-status');
+  try {
+    const response = await fetch('/api/reviews', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name.value, rating: Number(rating.value), text: text.value }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Не удалось опубликовать отзыв.');
+    reviewViewer.own = data.review;
+    reviewDialog.close();
+    const loaded = await loadReviews();
+    const confirmation = updating ? 'Изменения сохранены.' : 'Ваш отзыв опубликован.';
+    reviewNotice('reviews-status', loaded ? confirmation : `${confirmation} Обновите страницу, чтобы увидеть его.`);
+  } catch (error) {
+    reviewNotice('write-review-status', error.message || 'Не удалось опубликовать отзыв.', true);
+  } finally {
+    button.disabled = false;
+  }
+});
 
 function productTag(product) {
   return `<span class="tag tag-${escapeHtml(product.category)}">${escapeHtml(categoryById.get(product.category))}</span>`;
@@ -1042,7 +1226,14 @@ orderForm.addEventListener('submit', async (event) => {
 
 renderCategories();
 renderCart();
-renderReviews();
+loadReviews().then((loaded) => {
+  const url = new URL(location.href);
+  if (loaded && reviewViewer && url.searchParams.has('write-review')) {
+    url.searchParams.delete('write-review');
+    history.replaceState(history.state, '', url);
+    openReviewDialog();
+  }
+});
 
 </script>
 </head>
@@ -1110,10 +1301,15 @@ renderReviews();
         </blockquote>
       </details>
     </section>
-    <section class="reviews" id="reviews" aria-labelledby="reviews-title">
+    <section class="reviews" id="reviews" data-static-preview aria-labelledby="reviews-title">
       <div class="wrap">
-        <div class="section-top"><div><p class="eyebrow">Тёплые слова покупателей</p><h2 id="reviews-title">Отзывы</h2></div></div>
-        <div class="reviews-grid" id="reviews-list" aria-live="polite"></div>
+        <div class="section-top">
+          <div><p class="eyebrow">Родные вкусности</p><h2 id="reviews-title">Отзывы покупателей</h2></div>
+          <button class="button primary" type="button" id="write-review" hidden>Оставить отзыв</button>
+        </div>
+        <p class="notice" id="reviews-status" role="status" hidden></p>
+        <div class="reviews-grid" id="reviews-list"></div>
+        <button class="button secondary" type="button" id="more-reviews" hidden>Показать ещё отзывы</button>
       </div>
     </section>
     <section class="delivery" id="delivery" aria-labelledby="delivery-title">
@@ -1129,6 +1325,33 @@ renderReviews();
     </section>
   </main>
   <footer><div class="wrap footer-inner"><span>Родные вкусности</span><small>Домашние полуфабрикаты от Лены</small><span>Каталог «Родных вкусностей»</span><a href="#top">Наверх ↑</a></div></footer>
+  <dialog id="review-dialog" aria-labelledby="review-dialog-title">
+    <button class="close" data-close type="button" aria-label="Закрыть">×</button>
+    <div class="review-dialog-inner">
+      <h2 id="review-dialog-title">Оставить отзыв</h2>
+      <div id="review-sign-in" hidden>
+        <p>Войдите через ChatGPT, чтобы опубликовать отзыв от своего аккаунта.</p>
+        <a class="button primary" href="/signin-with-chatgpt?return_to=%2F%3Fwrite-review%3D1%23reviews" target="_top">Войти через ChatGPT</a>
+      </div>
+      <form id="write-review-form" hidden>
+        <label>Имя автора <input name="name" maxlength="80" autocomplete="name" required></label>
+        <fieldset class="review-rating">
+          <legend>Оценка</legend>
+          <div>
+            <label><input class="visually-hidden" type="radio" name="rating" value="1" aria-label="1 из 5" required><span aria-hidden="true">★</span></label>
+            <label><input class="visually-hidden" type="radio" name="rating" value="2" aria-label="2 из 5"><span aria-hidden="true">★</span></label>
+            <label><input class="visually-hidden" type="radio" name="rating" value="3" aria-label="3 из 5"><span aria-hidden="true">★</span></label>
+            <label><input class="visually-hidden" type="radio" name="rating" value="4" aria-label="4 из 5"><span aria-hidden="true">★</span></label>
+            <label><input class="visually-hidden" type="radio" name="rating" value="5" aria-label="5 из 5"><span aria-hidden="true">★</span></label>
+          </div>
+        </fieldset>
+        <label>Отзыв <textarea name="text" rows="5" maxlength="3000" required></textarea></label>
+        <p class="review-meta">Имя, оценка и текст будут видны на сайте.</p>
+        <button class="button primary" type="submit">Опубликовать отзыв</button>
+        <p class="notice" id="write-review-status" role="status" hidden></p>
+      </form>
+    </div>
+  </dialog>
   <dialog id="product-dialog" aria-labelledby="product-title"><button class="close" data-close type="button" aria-label="Закрыть">×</button><div id="product-detail"></div></dialog>
   <dialog id="cart-dialog" aria-labelledby="cart-title">
     <button class="close" data-close type="button" aria-label="Закрыть">×</button>
