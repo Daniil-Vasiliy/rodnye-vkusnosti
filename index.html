@@ -835,7 +835,7 @@ function connectDetailGallery(photos, name) {
 function reviewCard(review) {
   const { author, pseudonym } = review;
   let header = pseudonym
-    ? `<header><h3>${escapeHtml(pseudonym)}</h3><p class="review-meta">Псевдоним</p></header>`
+    ? `<h3>${escapeHtml(pseudonym)}</h3>`
     : '<p class="review-byline">Покупатель</p>';
   if (author) {
     const initials = author.split(/\s+/u).slice(0, 2).map((word) => Array.from(word)[0]).join('').toLocaleUpperCase('ru');
